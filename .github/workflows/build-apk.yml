@@ -10,25 +10,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install dependencies and accept licenses
-        run: |
-          sudo apt update
-          sudo apt install -y zip unzip openjdk-17-jdk
-          mkdir -p ~/.android
-          touch ~/.android/repositories.cfg
-          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses
-          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0"
-
-      - name: Fix buildozer SDK versions
-        run: |
-          sed -i 's/^#*android.api.*/android.api = 35/' buildozer.spec || true
-          sed -i 's/^#*android.minapi.*/android.minapi = 23/' buildozer.spec || true
-          sed -i 's/^#*android.sdk.*/android.sdk = 35/' buildozer.spec || true
-
       - name: Build APK
-        uses: digreatbrian/buildozer-action@v2
+        uses: ArtemSBulgakov/buildozer-action@v1
         with:
-          buildozer-cmd: buildozer android debug
+          command: buildozer android debug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
